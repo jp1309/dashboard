@@ -1,0 +1,6 @@
+@echo off
+echo Starting EMBI Dashboard...
+echo Please wait while the server starts...
+start http://localhost:8080
+python -m http.server 8080
+pause

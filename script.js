@@ -1,0 +1,400 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    // Elements
+    const countryListEl = document.getElementById('countryList');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const deselectAllBtn = document.getElementById('deselectAllBtn');
+    const ctx = document.getElementById('riskChart').getContext('2d');
+
+    // View Switcher Elements
+    const viewTimeSeriesBtn = document.getElementById('viewTimeSeriesBtn');
+    const viewRankingBtn = document.getElementById('viewRankingBtn');
+    const timeSeriesControls = document.getElementById('timeSeriesControls');
+    const rankingControls = document.getElementById('rankingControls');
+    const countriesControlGroup = document.getElementById('countriesControlGroup');
+    const rankingDateInput = document.getElementById('rankingDate');
+
+    // State
+    let rawData = [];
+    let chart;
+    let allCountries = [];
+    let selectedCountries = new Set();
+    let currentView = 'timeseries'; // 'timeseries' or 'ranking'
+    let countryColors = {};
+
+    // Premium colors
+    const colors = [
+        '#38bdf8', '#fbbf24', '#f87171', '#4ade80', '#a78bfa',
+        '#f472b6', '#22d3ee', '#fb923c', '#9ca3af', '#e879f9',
+        '#818cf8', '#34d399', '#facc15', '#ef4444', '#60a5fa'
+    ];
+
+    // Fetch Data
+    try {
+        const response = await fetch('data.json');
+        rawData = await response.json();
+        initDashboard();
+    } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Error cargando los datos. Asegúrate de que data.json está en la misma carpeta.");
+    }
+
+    function initDashboard() {
+        if (rawData.length === 0) return;
+
+        // Extract countries
+        const firstRow = rawData[0];
+        const excludedCountries = ['Venezuela', 'LATINO', 'Global', 'RD-LATINO'];
+        allCountries = Object.keys(firstRow).filter(key =>
+            key !== 'Fecha' &&
+            !key.startsWith('Unnamed') &&
+            key !== 'null' &&
+            !excludedCountries.includes(key)
+        );
+
+        // Assign consistent colors
+        allCountries.forEach((country, index) => {
+            countryColors[country] = colors[index % colors.length];
+        });
+
+        // Sort data by date
+        rawData.sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
+
+        const minDate = rawData[0].Fecha;
+        const maxDate = rawData[rawData.length - 1].Fecha;
+
+        // Init Time Series Inputs
+        const defaultStartDate = '2025-09-01';
+        startDateInput.value = defaultStartDate;
+        endDateInput.value = maxDate;
+        startDateInput.min = minDate;
+        startDateInput.max = maxDate;
+        endDateInput.min = minDate;
+        endDateInput.max = maxDate;
+
+        // Init Ranking Input
+        rankingDateInput.value = maxDate;
+        rankingDateInput.min = minDate;
+        rankingDateInput.max = maxDate;
+
+        // Populate Country List
+        renderCountryList();
+
+        // Select Ecuador and Argentina by default
+        const defaultCountries = ['Ecuador', 'Argentina'];
+        defaultCountries.forEach(c => {
+            if (allCountries.includes(c)) {
+                selectedCountries.add(c);
+            }
+        });
+        updateCheckboxes();
+
+        // Init Chart
+        updateView();
+    }
+
+    function renderCountryList() {
+        countryListEl.innerHTML = '';
+        allCountries.forEach(country => {
+            const div = document.createElement('div');
+            div.className = 'country-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `chk-${country}`;
+            checkbox.value = country;
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    selectedCountries.add(country);
+                } else {
+                    selectedCountries.delete(country);
+                }
+                if (currentView === 'timeseries') {
+                    updateChart();
+                }
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = `chk-${country}`;
+            label.textContent = country;
+            label.style.color = countryColors[country]; // Optional: color code the list too
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            countryListEl.appendChild(div);
+        });
+    }
+
+    function updateCheckboxes() {
+        const checkboxes = countryListEl.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            cb.checked = selectedCountries.has(cb.value);
+        });
+    }
+
+    function switchView(view) {
+        currentView = view;
+
+        // Update UI classes
+        if (view === 'timeseries') {
+            viewTimeSeriesBtn.classList.add('active');
+            viewRankingBtn.classList.remove('active');
+            timeSeriesControls.style.display = 'block';
+            countriesControlGroup.style.display = 'block';
+            rankingControls.style.display = 'none';
+        } else {
+            viewTimeSeriesBtn.classList.remove('active');
+            viewRankingBtn.classList.add('active');
+            timeSeriesControls.style.display = 'none';
+            countriesControlGroup.style.display = 'none';
+            rankingControls.style.display = 'block';
+        }
+
+        updateView();
+    }
+
+    function updateView() {
+        if (chart) {
+            chart.destroy();
+        }
+
+        if (currentView === 'timeseries') {
+            renderTimeSeriesChart();
+        } else {
+            renderRankingChart();
+        }
+    }
+
+    // --- Time Series Logic ---
+
+    function getFilteredTimeSeriesData() {
+        const start = new Date(startDateInput.value);
+        const end = new Date(endDateInput.value);
+
+        return rawData.filter(d => {
+            const date = new Date(d.Fecha);
+            return date >= start && date <= end;
+        });
+    }
+
+    function renderTimeSeriesChart() {
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+
+        const filteredData = getFilteredTimeSeriesData();
+
+        const datasets = Array.from(selectedCountries).map((country) => {
+            return {
+                label: country,
+                data: filteredData.map(row => ({
+                    x: row.Fecha,
+                    y: row[country]
+                })),
+                borderColor: countryColors[country],
+                backgroundColor: countryColors[country],
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                tension: 0.1,
+                datalabels: {
+                    display: false // Hide labels in time series
+                }
+            };
+        });
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#f8fafc', usePointStyle: true, pointStyle: 'circle' }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            title: function (context) {
+                                const date = new Date(context[0].parsed.x);
+                                const day = String(date.getUTCDate()).padStart(2, '0');
+                                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                                const year = String(date.getUTCFullYear()).slice(-2);
+                                return `${day}-${month}-${year}`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'month', displayFormats: { month: 'MMM yyyy' } },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        title: { display: true, text: 'Spread (bps)', color: '#94a3b8' }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels] // Register plugin locally if needed, but CDN usually registers globally. Safe to include if defined.
+        });
+    }
+
+    function updateChart() {
+        // Only update data if chart exists and is time series
+        if (chart && currentView === 'timeseries') {
+            const filteredData = getFilteredTimeSeriesData();
+            const datasets = Array.from(selectedCountries).map((country) => {
+                return {
+                    label: country,
+                    data: filteredData.map(row => ({
+                        x: row.Fecha,
+                        y: row[country]
+                    })),
+                    borderColor: countryColors[country],
+                    backgroundColor: countryColors[country],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    tension: 0.1,
+                    datalabels: {
+                        display: false
+                    }
+                };
+            });
+            chart.data.datasets = datasets;
+            chart.update();
+        }
+    }
+
+    // --- Ranking Logic ---
+
+    function renderRankingChart() {
+        const selectedDateStr = rankingDateInput.value;
+
+        // Find data for this date
+        const row = rawData.find(d => d.Fecha === selectedDateStr);
+
+        if (!row) {
+            // Handle no data case
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: [], datasets: [] },
+                options: {
+                    plugins: {
+                        title: { display: true, text: 'No hay datos para esta fecha' }
+                    }
+                }
+            });
+            return;
+        }
+
+        // Prepare data: [ {country, value}, ... ]
+        let rankingData = [];
+        allCountries.forEach(country => {
+            const val = row[country];
+            if (val !== null && val !== undefined) {
+                rankingData.push({ country, value: val });
+            }
+        });
+
+        // Sort descending
+        rankingData.sort((a, b) => b.value - a.value);
+
+        const labels = rankingData.map(d => d.country);
+        const dataValues = rankingData.map(d => d.value);
+
+        // Use consistent colors
+        const barColors = labels.map(c => countryColors[c]);
+
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Riesgo País (bps)',
+                    data: dataValues,
+                    backgroundColor: barColors,
+                    borderColor: barColors,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal bar chart
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1
+                    },
+                    datalabels: {
+                        color: '#f8fafc',
+                        anchor: 'end',
+                        align: 'end',
+                        offset: 4,
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: Math.round
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        grace: '10%' // Add some space for labels
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#f8fafc', font: { weight: 'bold' } }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    }
+
+    // Event Listeners
+    viewTimeSeriesBtn.addEventListener('click', () => switchView('timeseries'));
+    viewRankingBtn.addEventListener('click', () => switchView('ranking'));
+
+    startDateInput.addEventListener('change', updateChart);
+    endDateInput.addEventListener('change', updateChart);
+    rankingDateInput.addEventListener('change', () => {
+        if (currentView === 'ranking') updateView();
+    });
+
+    selectAllBtn.addEventListener('click', () => {
+        allCountries.forEach(c => selectedCountries.add(c));
+        updateCheckboxes();
+        if (currentView === 'timeseries') updateChart();
+    });
+
+    deselectAllBtn.addEventListener('click', () => {
+        selectedCountries.clear();
+        updateCheckboxes();
+        if (currentView === 'timeseries') updateChart();
+    });
+});

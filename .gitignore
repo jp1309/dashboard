@@ -1,0 +1,5 @@
+# Archivos a ignorar en Git
+Serie_Historica_Spread_del_EMBI.xlsx
+__pycache__/
+*.pyc
+.DS_Store

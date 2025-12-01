@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Riesgo País (EMBI)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Dashboard de Riesgo País (EMBI)</h1>
+            <p>Visualización histórica de spreads de deuda soberana</p>
+        </header>
+
+        <main class="dashboard-content">
+            <aside class="controls-panel">
+                <div class="control-group">
+                    <h3>Modo de Visualización</h3>
+                    <div class="view-switcher">
+                        <button id="viewTimeSeriesBtn" class="view-btn active">Serie de Tiempo</button>
+                        <button id="viewRankingBtn" class="view-btn">Ranking por Fecha</button>
+                    </div>
+                </div>
+
+                <div id="timeSeriesControls" class="control-group">
+                    <h3>Rango de Fechas</h3>
+                    <div class="date-inputs">
+                        <div class="input-wrapper">
+                            <label for="startDate">Desde</label>
+                            <input type="date" id="startDate">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="endDate">Hasta</label>
+                            <input type="date" id="endDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rankingControls" class="control-group" style="display: none;">
+                    <h3>Fecha del Ranking</h3>
+                    <div class="input-wrapper">
+                        <label for="rankingDate">Seleccionar Fecha</label>
+                        <input type="date" id="rankingDate">
+                    </div>
+                </div>
+
+                <div id="countriesControlGroup" class="control-group">
+                    <div class="group-header">
+                        <h3>Países</h3>
+                        <button id="selectAllBtn" class="btn-text">Seleccionar Todos</button>
+                        <button id="deselectAllBtn" class="btn-text">Deseleccionar</button>
+                    </div>
+                    <div id="countryList" class="country-list">
+                        <!-- Checkboxes will be injected here -->
+                    </div>
+                </div>
+            </aside>
+
+            <section class="chart-section">
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js?v=4"></script>
+</body>
+
+</html>
