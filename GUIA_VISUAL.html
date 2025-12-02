@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Guía de Publicación - Dashboard EMBI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .step-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .step-content {
+            margin-left: 55px;
+            color: #555;
+        }
+
+        .step-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .step-content li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            color: #0c5460;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        .checklist {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .checklist-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 Publicar Dashboard en la Web</h1>
+        <p class="subtitle">Sigue estos pasos para tener tu dashboard en línea en menos de 10 minutos</p>
+
+        <div class="info">
+            <strong>📋 Requisitos previos:</strong>
+            <ul>
+                <li>✅ Cuenta de GitHub (gratis)</li>
+                <li>✅ GitHub Desktop instalado</li>
+            </ul>
+        </div>
+
+        <!-- Paso 1 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Crear Cuenta en GitHub
+            </div>
+            <div class="step-content">
+                <p>Si aún no tienes cuenta:</p>
+                <ul>
+                    <li>Ve a <a href="https://github.com" target="_blank">github.com</a></li>
+                    <li>Click en <span class="highlight">Sign up</span></li>
+                    <li>Completa el registro (es gratis)</li>
+                </ul>
+                <div class="links">
+                    <a href="https://github.com/signup" target="_blank" class="btn">Crear Cuenta GitHub</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Instalar GitHub Desktop
+            </div>
+            <div class="step-content">
+                <ul>
+                    <li>Descarga GitHub Desktop</li>
+                    <li>Instala el programa</li>
+                    <li>Inicia sesión con tu cuenta de GitHub</li>
+                </ul>
+                <div class="links">
+                    <a href="https://desktop.github.com" target="_blank" class="btn">Descargar GitHub Desktop</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Crear Repositorio
+            </div>
+            <div class="step-content">
+                <p>En GitHub.com:</p>
+                <ul>
+                    <li>Click en el botón <span class="highlight">+</span> (arriba derecha)</li>
+                    <li>Selecciona <span class="highlight">New repository</span></li>
+                    <li><strong>Repository name:</strong> <code>dashboard-embi</code></li>
+                    <li><strong>Description:</strong> Dashboard interactivo EMBI</li>
+                    <li>Marca como <span class="highlight">Public</span> ✅</li>
+                    <li>NO marques "Add a README file"</li>
+                    <li>Click <span class="highlight">Create repository</span></li>
+                </ul>
+                <div class="warning">
+                    <strong>⚠️ Importante:</strong> El repositorio DEBE ser público para usar GitHub Pages gratis.
+                </div>
+                <div class="links">
+                    <a href="https://github.com/new" target="_blank" class="btn">Crear Repositorio</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 4 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Publicar con GitHub Desktop
+            </div>
+            <div class="step-content">
+                <p>En GitHub Desktop:</p>
+                <ul>
+                    <li>Click en <span class="highlight">File → Add local repository</span></li>
+                    <li>Click en <span class="highlight">Choose...</span></li>
+                    <li>Selecciona la carpeta: <code>c:\Users\HP\Downloads\dashboard</code></li>
+                    <li>Si dice que no es un repositorio, click en <span class="highlight">create a repository</span>
+                    </li>
+                    <li>Click en <span class="highlight">Publish repository</span></li>
+                    <li>Asegúrate de que <strong>"Keep this code private"</strong> esté DESMARCADO</li>
+                    <li>Click <span class="highlight">Publish repository</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Paso 5 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">5</span>
+                Activar GitHub Pages
+            </div>
+            <div class="step-content">
+                <p>En tu repositorio de GitHub:</p>
+                <ul>
+                    <li>Click en <span class="highlight">Settings</span> ⚙️</li>
+                    <li>En el menú izquierdo, click en <span class="highlight">Pages</span></li>
+                    <li>En <strong>Branch</strong>: Selecciona <span class="highlight">main</span></li>
+                    <li>En <strong>Folder</strong>: Selecciona <span class="highlight">/ (root)</span></li>
+                    <li>Click <span class="highlight">Save</span></li>
+                    <li><strong>Espera 1-2 minutos</strong> ⏱️</li>
+                    <li>Refresca la página</li>
+                </ul>
+                <div class="success">
+                    ✅ Verás: "Your site is live at https://TU-USUARIO.github.io/dashboard-embi/"
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 6 -->
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">6</span>
+                Activar Actualización Automática
+            </div>
+            <div class="step-content">
+                <p>Para que los datos se actualicen automáticamente cada día:</p>
+                <ul>
+                    <li>Ve a tu repositorio → pestaña <span class="highlight">Actions</span></li>
+                    <li>Si aparece un botón verde, click en <span class="highlight">"I understand my workflows, go ahead
+                            and enable them"</span></li>
+                    <li>¡Listo! Los datos se actualizarán automáticamente</li>
+                </ul>
+                <div class="info">
+                    <strong>💡 Tip:</strong> Puedes ejecutar la actualización manualmente desde Actions → Update EMBI
+                    Data → Run workflow
+                </div>
+            </div>
+        </div>
+
+        <!-- Éxito -->
+        <div class="success">
+            🎉 ¡Felicidades! Tu dashboard ya está en línea 🎉
+        </div>
+
+        <div class="checklist">
+            <h3 style="margin-bottom: 15px;">✅ Checklist Final:</h3>
+            <div class="checklist-item">☐ Cuenta de GitHub creada</div>
+            <div class="checklist-item">☐ GitHub Desktop instalado</div>
+            <div class="checklist-item">☐ Repositorio creado (público)</div>
+            <div class="checklist-item">☐ Código publicado</div>
+            <div class="checklist-item">☐ GitHub Pages activado</div>
+            <div class="checklist-item">☐ Actions habilitado</div>
+            <div class="checklist-item">☐ Dashboard funcionando en la web</div>
+        </div>
+
+        <div class="info" style="margin-top: 30px;">
+            <strong>🔗 Tu dashboard estará en:</strong><br>
+            <div class="code">https://TU-USUARIO.github.io/dashboard-embi/</div>
+            <p style="margin-top: 10px;">Reemplaza <strong>TU-USUARIO</strong> con tu nombre de usuario de GitHub</p>
+        </div>
+
+        <div class="links">
+            <a href="https://github.com" target="_blank" class="btn">Ir a GitHub</a>
+            <a href="https://desktop.github.com" target="_blank" class="btn">Descargar GitHub Desktop</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; color: #666;">
+            <p>📚 Para más detalles, consulta <strong>GUIA_PUBLICACION.md</strong></p>
+            <p style="margin-top: 20px;">Hecho con ❤️ para análisis financiero</p>
+        </div>
+    </div>
+</body>
+
+</html>

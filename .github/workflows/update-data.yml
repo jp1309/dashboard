@@ -3,7 +3,7 @@ name: Update EMBI Data
 on:
   schedule:
     # Ejecutar todos los días a las 6 AM UTC (1 AM RD)
-    - cron: '0 6 * * *'
+    - cron: '30 15 * * *' # 10:30 AM ET (15:30 UTC)
   workflow_dispatch: # Permite ejecutar manualmente
 
 jobs:
