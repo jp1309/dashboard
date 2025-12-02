@@ -24,10 +24,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     let countryColors = {};
 
     // Premium colors
-    const colors = [
+    // Flag Colors Mapping
+    const flagColors = {
+        'Ecuador': '#0047AB', // Azul solicitado
+        'Argentina': '#75AADB', // Celeste
+        'Brasil': '#009C3B', // Verde
+        'Colombia': '#FCD116', // Amarillo
+        'México': '#006847', // Verde oscuro
+        'Perú': '#D91023', // Rojo
+        'Chile': '#0039A6', // Azul
+        'Uruguay': '#0038A8', // Azul
+        'Panamá': '#DA121A', // Rojo
+        'Rep. Dom.': '#002D62', // Azul oscuro
+        'Costa Rica': '#CE1126', // Rojo
+        'El Salvador': '#0F47AF', // Azul
+        'Guatemala': '#4997D0', // Celeste
+        'Honduras': '#0073CF', // Azul claro
+        'Paraguay': '#D52B1E', // Rojo
+        'Bolivia': '#007934', // Verde
+        'Venezuela': '#CF142B', // Rojo
+        'Turquía': '#E30A17', // Rojo
+        'Sudáfrica': '#007749', // Verde
+        'Egipto': '#C09300', // Dorado
+        'Nigeria': '#008751', // Verde
+        'Angola': '#C8102E', // Rojo
+    };
+
+    // Fallback colors for other countries
+    const fallbackColors = [
         '#38bdf8', '#fbbf24', '#f87171', '#4ade80', '#a78bfa',
-        '#f472b6', '#22d3ee', '#fb923c', '#9ca3af', '#e879f9',
-        '#818cf8', '#34d399', '#facc15', '#ef4444', '#60a5fa'
+        '#f472b6', '#22d3ee', '#fb923c', '#9ca3af', '#e879f9'
     ];
 
     // Fetch Data
@@ -53,9 +79,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             !excludedCountries.includes(key)
         );
 
-        // Assign consistent colors
+        // Assign colors based on flags or fallback
         allCountries.forEach((country, index) => {
-            countryColors[country] = colors[index % colors.length];
+            if (flagColors[country]) {
+                countryColors[country] = flagColors[country];
+            } else {
+                countryColors[country] = fallbackColors[index % fallbackColors.length];
+            }
         });
 
         // Sort data by date
