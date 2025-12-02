@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 plugins: {
                     legend: {
                         position: 'top',
-                        labels: { color: '#f8fafc', usePointStyle: true, pointStyle: 'circle' }
+                        labels: { color: '#1e293b', usePointStyle: true, pointStyle: 'circle' }
                     },
                     tooltip: {
                         backgroundColor: '#ffffff',
