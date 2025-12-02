@@ -224,11 +224,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 borderColor: countryColors[country],
                 backgroundColor: countryColors[country],
                 borderWidth: 2,
-                pointRadius: 0,
-                pointHoverRadius: 4,
+                pointRadius: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1 ? 5 : 0,
+                pointHoverRadius: 6,
                 tension: 0.1,
                 datalabels: {
-                    display: false // Hide labels in time series
+                    display: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1,
+                    align: 'right',
+                    anchor: 'end',
+                    color: countryColors[country],
+                    font: { weight: 'bold' },
+                    formatter: (value) => Math.round(value.y)
                 }
             };
         });
@@ -237,6 +242,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             type: 'line',
             data: { datasets },
             options: {
+                layout: {
+                    padding: { right: 40 }
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: {
@@ -300,11 +308,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     borderColor: countryColors[country],
                     backgroundColor: countryColors[country],
                     borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 4,
+                    pointRadius: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1 ? 5 : 0,
+                    pointHoverRadius: 6,
                     tension: 0.1,
                     datalabels: {
-                        display: false
+                        display: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1,
+                        align: 'right',
+                        anchor: 'end',
+                        color: countryColors[country],
+                        font: { weight: 'bold' },
+                        formatter: (value) => Math.round(value.y)
                     }
                 };
             });
