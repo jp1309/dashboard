@@ -24,30 +24,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     let countryColors = {};
 
     // Premium colors
-    // Flag Colors Mapping
+    // Flag Colors Mapping - Optimized for distinction
     const flagColors = {
-        'Ecuador': '#0047AB', // Azul solicitado
-        'Argentina': '#75AADB', // Celeste
-        'Brasil': '#009C3B', // Verde
+        'Ecuador': '#0047AB', // Azul solicitado (Fuerte)
+        'Argentina': '#92C5DE', // Celeste Pálido
+        'Bolivia': '#1E5631', // Verde Oscuro
+        'Brasil': '#4CC552', // Verde Lima Brillante
+        'Chile': '#D32F2F', // Rojo Intenso
         'Colombia': '#FCD116', // Amarillo
-        'México': '#006847', // Verde oscuro
-        'Perú': '#D91023', // Rojo
-        'Chile': '#0039A6', // Azul
-        'Uruguay': '#0038A8', // Azul
-        'Panamá': '#DA121A', // Rojo
-        'Rep. Dom.': '#002D62', // Azul oscuro
-        'Costa Rica': '#CE1126', // Rojo
-        'El Salvador': '#0F47AF', // Azul
-        'Guatemala': '#4997D0', // Celeste
-        'Honduras': '#0073CF', // Azul claro
-        'Paraguay': '#D52B1E', // Rojo
-        'Bolivia': '#007934', // Verde
-        'Venezuela': '#CF142B', // Rojo
-        'Turquía': '#E30A17', // Rojo
-        'Sudáfrica': '#007749', // Verde
-        'Egipto': '#C09300', // Dorado
-        'Nigeria': '#008751', // Verde
-        'Angola': '#C8102E', // Rojo
+        'Costa Rica': '#E91E63', // Rosa Fuerte (Distinción)
+        'El Salvador': '#3F51B5', // Índigo/Morado
+        'Guatemala': '#00BCD4', // Cian
+        'Honduras': '#00E5FF', // Turquesa Neón
+        'México': '#009688', // Verde Azulado (Teal)
+        'Panamá': '#FF5722', // Naranja Intenso
+        'Paraguay': '#880E4F', // Vino Tinto
+        'Perú': '#F44336', // Rojo Coral
+        'Rep. Dom.': '#9C27B0', // Púrpura (Distinción)
+        'Uruguay': '#607D8B', // Azul Acero
+        'Venezuela': '#795548', // Marrón
+        'Turquía': '#A52A2A', // Marrón Rojizo
+        'Sudáfrica': '#FF9800', // Naranja
+        'Egipto': '#FFC107', // Ámbar
+        'Nigeria': '#4CAF50', // Verde Medio
+        'Angola': '#B71C1C', // Rojo Oscuro
     };
 
     // Fallback colors for other countries
