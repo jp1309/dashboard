@@ -209,8 +209,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderTimeSeriesChart() {
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#334155';
+        Chart.defaults.color = '#1e293b'; // Dark text
+        Chart.defaults.borderColor = '#e2e8f0'; // Light gray border
 
         const filteredData = getFilteredTimeSeriesData();
 
@@ -257,10 +257,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         labels: { color: '#f8fafc', usePointStyle: true, pointStyle: 'circle' }
                     },
                     tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#f8fafc',
-                        bodyColor: '#cbd5e1',
-                        borderColor: '#334155',
+                        backgroundColor: '#ffffff',
+                        titleColor: '#0f172a',
+                        bodyColor: '#334155',
+                        borderColor: '#e2e8f0',
                         borderWidth: 1,
                         callbacks: {
                             title: function (context) {
@@ -280,13 +280,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     x: {
                         type: 'time',
                         time: { unit: 'month', displayFormats: { month: 'MMM yyyy' } },
-                        grid: { color: '#334155' },
-                        ticks: { color: '#94a3b8' }
+                        grid: { color: '#e2e8f0' },
+                        ticks: { color: '#64748b' }
                     },
                     y: {
-                        grid: { color: '#334155' },
-                        ticks: { color: '#94a3b8' },
-                        title: { display: true, text: 'Spread (bps)', color: '#94a3b8' }
+                        grid: { color: '#e2e8f0' },
+                        ticks: { color: '#64748b' },
+                        title: { display: true, text: 'Spread (bps)', color: '#475569' }
                     }
                 }
             },
@@ -386,14 +386,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#f8fafc',
-                        bodyColor: '#cbd5e1',
-                        borderColor: '#334155',
+                        backgroundColor: '#ffffff',
+                        titleColor: '#0f172a',
+                        bodyColor: '#334155',
+                        borderColor: '#e2e8f0',
                         borderWidth: 1
                     },
                     datalabels: {
-                        color: '#f8fafc',
+                        color: '#334155',
                         anchor: 'end',
                         align: 'end',
                         offset: 4,
@@ -405,13 +405,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 scales: {
                     x: {
-                        grid: { color: '#334155' },
-                        ticks: { color: '#94a3b8' },
+                        grid: { color: '#e2e8f0' },
+                        ticks: { color: '#64748b' },
                         grace: '10%' // Add some space for labels
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { color: '#f8fafc', font: { weight: 'bold' } }
+                        ticks: { color: '#1e293b', font: { weight: 'bold' } }
                     }
                 }
             },

@@ -227,7 +227,7 @@ input[type="date"]:focus {
 
 .chart-container {
     flex: 1;
-    background-color: var(--bg-secondary);
+    background-color: #ffffff;
     border-radius: 0.75rem;
     padding: 1.5rem;
     box-shadow: var(--shadow-lg);
