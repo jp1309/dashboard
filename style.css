@@ -126,18 +126,30 @@ body {
 }
 
 input[type="date"] {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
+    background-color: #334155;
+    border: 1px solid #475569;
+    color: #f8fafc;
     padding: 0.5rem;
     border-radius: 0.375rem;
     font-family: inherit;
     outline: none;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }
 
 input[type="date"]:focus {
     border-color: var(--accent-color);
+    background-color: #3f4f63;
 }
 
 .group-header {
