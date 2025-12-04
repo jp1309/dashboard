@@ -1,148 +1,73 @@
-# 📊 Dashboard Interactivo - Riesgo País EMBI
+# Dashboard de Análisis de Riesgo País (EMBI)
 
-Dashboard web interactivo para visualizar y analizar datos históricos del EMBI (Emerging Markets Bond Index) y riesgo país.
+Plataforma interactiva de visualización de datos financieros diseñada para el monitoreo y análisis histórico del índice EMBI (Emerging Markets Bond Index) en mercados emergentes.
 
-## 🌐 Ver Dashboard en Vivo
+## 📋 Descripción General
 
-**[🚀 Acceder al Dashboard](https://TU-USUARIO.github.io/dashboard-embi/)**
+Este proyecto proporciona una interfaz web analítica para explorar la evolución del riesgo país a través de múltiples dimensiones temporales y comparativas. Utiliza datos de series temporales para generar visualizaciones dinámicas que facilitan la toma de decisiones y el análisis económico.
 
-*(Reemplaza TU-USUARIO con tu nombre de usuario de GitHub)*
+## 🚀 Funcionalidades Principales
 
----
+### 1. Visualización de Series Temporales
+- Gráficos de línea interactivos para el seguimiento histórico del spread (bps).
+- Capacidad de comparación simultánea entre múltiples países.
+- Filtros de rango de fechas personalizados.
 
-## ✨ Características
+### 2. Ranking Comparativo
+- Gráfico de barras horizontal para la comparación transversal de riesgo en fechas específicas.
+- Ordenamiento automático de mayor a menor riesgo.
 
-- 📈 **Visualización Interactiva**: Gráficos dinámicos con Chart.js
-- 🌍 **Múltiples Países**: Análisis comparativo de diferentes mercados emergentes
-- 📅 **Datos Históricos**: Serie temporal completa del EMBI
-- 🎨 **Diseño Moderno**: Interfaz responsive y atractiva
-- 🔄 **Actualización Automática**: Los datos se actualizan diariamente
-- 📱 **Responsive**: Funciona perfectamente en móviles y tablets
-- 🎯 **Ranking Dinámico**: Visualización de países por nivel de riesgo
+### 3. Mapa de Calor (Heatmap)
+- Visualización matricial de intensidad de riesgo (Año vs. Día del año).
+- Escala de color de 5 niveles para identificación rápida de patrones estacionales y tendencias estructurales.
+- Algoritmo de relleno de datos (forward-fill) para continuidad visual en series incompletas.
 
----
+## 🛠️ Stack Tecnológico
 
-## 🎯 Vistas Disponibles
+- **Frontend:** HTML5, CSS3 (Diseño Responsive), JavaScript (ES6+).
+- **Visualización:** Chart.js, chartjs-chart-matrix.
+- **Procesamiento de Datos:** Python (Pandas) para la transformación de Excel a JSON.
+- **Automatización:** GitHub Actions para la actualización diaria de datos.
+- **Despliegue:** GitHub Pages.
 
-1. **📈 Vista Temporal**: Evolución del EMBI a lo largo del tiempo
-2. **🏆 Vista Ranking**: Comparación de países por nivel de riesgo actual
-3. **🔍 Filtros Interactivos**: Selección de países y períodos personalizados
-
----
-
-## 🚀 Tecnologías Utilizadas
-
-- **HTML5** - Estructura
-- **CSS3** - Estilos modernos con gradientes y animaciones
-- **JavaScript** - Lógica e interactividad
-- **Chart.js** - Visualización de datos
-- **Python** - Procesamiento de datos
-- **GitHub Actions** - Actualización automática
-
----
-
-## 📦 Estructura del Proyecto
+## 📂 Estructura del Repositorio
 
 ```
 dashboard/
-├── index.html              # Página principal
-├── script.js              # Lógica del dashboard
-├── style.css              # Estilos
-├── data.json              # Datos procesados
-├── convert_data.py        # Script de procesamiento
-├── .github/
-│   └── workflows/
-│       └── update-data.yml # Actualización automática
-└── README.md              # Este archivo
+├── index.html              # Punto de entrada de la aplicación
+├── script.js               # Lógica de negocio y renderizado de gráficos
+├── style.css               # Definiciones de estilos y diseño visual
+├── data.json               # Fuente de datos estructurada (generada automáticamente)
+├── convert_data.py         # Script ETL (Extract, Transform, Load)
+├── .github/workflows/      # Configuraciones CI/CD
+└── README.md               # Documentación técnica
 ```
 
----
+## 🔄 Flujo de Datos
 
-## 🔄 Actualización de Datos
+1. **Ingesta:** Los datos brutos se procesan desde archivos Excel (`.xlsx`).
+2. **Transformación:** El script `convert_data.py` limpia, normaliza y exporta los datos a formato JSON optimizado para web.
+3. **Visualización:** El cliente web consume `data.json` y renderiza los gráficos en el navegador del usuario.
 
-Los datos se actualizan automáticamente cada día a las 6 AM UTC mediante GitHub Actions.
+## 💻 Instalación y Despliegue Local
 
-### Actualización Manual:
-1. Ve a la pestaña **Actions** en GitHub
-2. Selecciona **"Update EMBI Data"**
-3. Click en **"Run workflow"**
+Para ejecutar este proyecto en un entorno local:
 
----
-
-## 💻 Desarrollo Local
-
-Para ejecutar el dashboard localmente:
-
-1. **Clona el repositorio**:
+1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/TU-USUARIO/dashboard-embi.git
    cd dashboard-embi
    ```
 
-2. **Abre con un servidor local**:
-   - Opción 1: Doble click en `start_dashboard.bat` (Windows)
-   - Opción 2: Usa Python:
-     ```bash
-     python -m http.server 8000
-     ```
-   - Opción 3: Usa la extensión "Live Server" de VS Code
-
-3. **Abre en el navegador**:
-   ```
-   http://localhost:8000
-   ```
-
----
-
-## 🔧 Procesar Datos Nuevos
-
-Si tienes un archivo Excel actualizado:
-
-1. Coloca el archivo `Serie_Historica_Spread_del_EMBI.xlsx` en la carpeta raíz
-2. Ejecuta:
+2. **Servir la aplicación:**
+   Puede utilizar cualquier servidor HTTP estático. Ejemplo con Python:
    ```bash
-   python convert_data.py
+   python -m http.server 8000
    ```
-3. Se generará un nuevo `data.json`
 
----
+3. **Acceder:**
+   Abra su navegador en `http://localhost:8000`.
 
-## 📊 Fuente de Datos
+## 📄 Licencia
 
-Los datos provienen de la serie histórica del EMBI (Emerging Markets Bond Index), que mide el riesgo país de mercados emergentes.
-
----
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas! Si encuentras algún error o tienes sugerencias:
-
-1. Haz un Fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
----
-
-## 📝 Licencia
-
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
----
-
-## 📧 Contacto
-
-¿Preguntas o sugerencias? Abre un [Issue](https://github.com/TU-USUARIO/dashboard-embi/issues) en GitHub.
-
----
-
-## 🌟 Agradecimientos
-
-- Chart.js por la librería de visualización
-- GitHub Pages por el hosting gratuito
-- La comunidad de código abierto
-
----
-
-**Hecho con ❤️ para análisis financiero**
+Este proyecto se distribuye bajo la licencia MIT. Consulte el archivo `LICENSE` para más detalles.
