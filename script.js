@@ -272,6 +272,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         font: { size: 16, weight: 'bold' },
                         padding: { bottom: 20 }
                     },
+                    subtitle: {
+                        display: true,
+                        text: 'Fuente: Banco Central de la República Dominicana',
+                        align: 'end',
+                        color: '#64748b',
+                        font: { size: 10 },
+                        padding: { top: 10 }
+                    },
                     tooltip: {
                         backgroundColor: '#ffffff',
                         titleColor: '#0f172a',
@@ -401,6 +409,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
+                    title: {
+                        display: true,
+                        text: (() => {
+                            if (!rawData || rawData.length === 0) return '';
+                            const lastDate = new Date(rawData[rawData.length - 1].Fecha);
+                            const day = String(lastDate.getUTCDate()).padStart(2, '0');
+                            const month = String(lastDate.getUTCMonth() + 1).padStart(2, '0');
+                            const year = lastDate.getUTCFullYear();
+                            return `Riesgo País (último dato: ${day}/${month}/${year})`;
+                        })(),
+                        align: 'start',
+                        color: '#1e293b',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { bottom: 20 }
+                    },
+                    subtitle: {
+                        display: true,
+                        text: 'Fuente: Banco Central de la República Dominicana',
+                        align: 'end',
+                        color: '#64748b',
+                        font: { size: 10 },
+                        padding: { top: 10 }
+                    },
                     tooltip: {
                         backgroundColor: '#ffffff',
                         titleColor: '#0f172a',
