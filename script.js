@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let chart;
     let allCountries = [];
     let selectedCountries = new Set();
-    let currentView = 'timeseries'; // 'timeseries', 'ranking', or 'heatmap'
+    let currentView = 'timeseries';
     let countryColors = {};
 
     // Custom plugin to draw source text at bottom-left
@@ -41,14 +41,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const text = 'Fuente: Banco Central de la República Dominicana';
             const x = chartArea.left;
-            const y = chart.height - 5; // 5px from bottom
+            const y = chart.height - 5;
 
             ctx.fillText(text, x, y);
             ctx.restore();
         }
     };
 
-    // Flag Colors Mapping - Optimized for distinction
+    // Flag Colors Mapping
     const flagColors = {
         'Ecuador': '#0047AB',
         'Argentina': '#92C5DE',
@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         'Angola': '#B71C1C',
     };
 
-    // Fallback colors for other countries
     const fallbackColors = [
         '#38bdf8', '#fbbf24', '#f87171', '#4ade80', '#a78bfa',
         '#f472b6', '#22d3ee', '#fb923c', '#9ca3af', '#e879f9'
@@ -87,13 +86,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         initDashboard();
     } catch (error) {
         console.error("Error loading data:", error);
-        alert("Error cargando los datos. Asegúrate de que data.json está en la misma carpeta.");
+        alert("Error cargando los datos.");
     }
 
     function initDashboard() {
         if (rawData.length === 0) return;
 
-        // Extract countries
         const firstRow = rawData[0];
         const excludedCountries = ['Venezuela', 'LATINO', 'Global', 'RD-LATINO'];
         allCountries = Object.keys(firstRow).filter(key =>
@@ -103,7 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             !excludedCountries.includes(key)
         );
 
-        // Assign colors based on flags or fallback
         allCountries.forEach((country, index) => {
             if (flagColors[country]) {
                 countryColors[country] = flagColors[country];
@@ -112,13 +109,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Sort data by date
         rawData.sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
 
         const minDate = rawData[0].Fecha;
         const maxDate = rawData[rawData.length - 1].Fecha;
 
-        // Init Time Series Inputs
         const defaultStartDate = '2025-09-01';
         startDateInput.value = defaultStartDate;
         endDateInput.value = maxDate;
@@ -127,18 +122,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         endDateInput.min = minDate;
         endDateInput.max = maxDate;
 
-        // Init Ranking Input
         rankingDateInput.value = maxDate;
         rankingDateInput.min = minDate;
         rankingDateInput.max = maxDate;
 
-        // Populate Country List
         renderCountryList();
-
-        // Populate Heatmap Country Select
         populateHeatmapCountrySelect();
 
-        // Select Ecuador and Argentina by default
         const defaultCountries = ['Ecuador', 'Argentina'];
         defaultCountries.forEach(c => {
             if (allCountries.includes(c)) {
@@ -147,7 +137,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         updateCheckboxes();
 
-        // Init Chart
         updateView();
     }
 
@@ -204,7 +193,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     function switchView(view) {
         currentView = view;
 
-        // Update UI classes
         viewTimeSeriesBtn.classList.remove('active');
         viewRankingBtn.classList.remove('active');
         viewHeatmapBtn.classList.remove('active');
@@ -245,8 +233,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderHeatmapChart();
         }
     }
-
-    // --- Time Series Logic ---
 
     function getFilteredTimeSeriesData() {
         const start = new Date(startDateInput.value);
@@ -391,11 +377,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- Ranking Logic ---
-
     function renderRankingChart() {
         const selectedDateStr = rankingDateInput.value;
-
         const row = rawData.find(d => d.Fecha === selectedDateStr);
 
         if (!row) {
@@ -503,28 +486,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function getHeatmapData(country) {
-        const countryData = rawData.map(row => ({
-            date: new Date(row.Fecha),
-            value: row[country]
-        })).filter(d => d.value !== null && d.value !== undefined);
+        const countryData = rawData
+            .map(row => ({
+                date: new Date(row.Fecha),
+                value: row[country]
+            }))
+            .filter(d => d.value !== null && d.value !== undefined && d.date.getFullYear() >= 2008);
+
+        if (countryData.length === 0) return [];
 
         const years = [...new Set(countryData.map(d => d.date.getFullYear()))].sort();
-        const minYear = Math.max(2005, Math.min(...years));
+        const minYear = Math.min(...years);
         const maxYear = Math.max(...years);
 
         const heatmapMatrix = [];
 
         for (let year = minYear; year <= maxYear; year++) {
-            const yearData = countryData.filter(d => d.date.getFullYear() === year);
+            let lastValue = null;
 
-            yearData.forEach(d => {
-                const dayOfYear = getDayOfYear(d.date);
-                heatmapMatrix.push({
-                    x: year.toString(),
-                    y: dayOfYear,
-                    v: d.value
-                });
-            });
+            for (let day = 1; day <= 365; day++) {
+                const dataPoint = countryData.find(d =>
+                    d.date.getFullYear() === year && getDayOfYear(d.date) === day
+                );
+
+                if (dataPoint) {
+                    lastValue = dataPoint.value;
+                }
+
+                if (lastValue !== null) {
+                    heatmapMatrix.push({
+                        x: year.toString(),
+                        y: day,
+                        v: lastValue
+                    });
+                }
+            }
         }
 
         return heatmapMatrix;
@@ -557,11 +553,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     data: data,
                     backgroundColor(context) {
                         const value = context.dataset.data[context.dataIndex].v;
-                        if (value < 600) return 'rgba(34, 197, 94, 0.8)'; // Verde
-                        if (value < 1000) return 'rgba(251, 191, 36, 0.8)'; // Amarillo
-                        return 'rgba(239, 68, 68, 0.8)'; // Rojo
+                        if (value < 600) return 'rgb(22, 163, 74)'; // Verde fuerte
+                        if (value < 1000) return 'rgb(234, 179, 8)'; // Amarillo fuerte
+                        return 'rgb(220, 38, 38)'; // Rojo fuerte
                     },
-                    borderColor: '#e2e8f0',
+                    borderColor: '#ffffff',
                     borderWidth: 0.5,
                     width: ({ chart }) => (chart.chartArea || {}).width / years.length - 1,
                     height: ({ chart }) => (chart.chartArea || {}).height / 365 - 0.5
@@ -570,6 +566,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: { bottom: 25 }
+                },
                 plugins: {
                     legend: { display: false },
                     title: {
@@ -585,7 +584,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         align: 'start',
                         color: '#1e293b',
                         font: { size: 16, weight: 'bold' },
-                        padding: { bottom: 20 }
+                        padding: { bottom: 5 }
+                    },
+                    subtitle: {
+                        display: true,
+                        text: `País: ${selectedCountry}`,
+                        align: 'start',
+                        color: '#475569',
+                        font: { size: 13 },
+                        padding: { bottom: 15 }
                     },
                     tooltip: {
                         backgroundColor: '#ffffff',
@@ -613,9 +620,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         type: 'category',
                         labels: years,
                         offset: true,
+                        position: 'top',
                         ticks: {
                             color: '#64748b',
-                            font: { size: 11 }
+                            font: { size: 11, weight: 'bold' }
                         },
                         grid: {
                             display: false
@@ -626,10 +634,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         min: 1,
                         max: 365,
                         offset: true,
-                        reverse: false,
+                        reverse: true,
                         ticks: {
                             stepSize: 30,
                             color: '#64748b',
+                            font: { weight: 'bold' },
                             callback: function (value) {
                                 const months = [
                                     { day: 1, label: 'Ene' }, { day: 32, label: 'Feb' },
@@ -644,7 +653,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             }
                         },
                         grid: {
-                            color: '#e2e8f0',
+                            color: '#f1f5f9',
                             lineWidth: 0.5
                         }
                     }
