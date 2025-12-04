@@ -382,11 +382,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const years = [...new Set(data.map(d => d.x))].sort();
         const colorScale = {
-            veryLow: 'rgba(0, 100, 0, 1.0)',
-            low: 'rgba(144, 238, 144, 1.0)',
-            medium: 'rgba(255, 215, 0, 1.0)',
-            high: 'rgba(255, 140, 0, 1.0)',
-            veryHigh: 'rgba(178, 34, 34, 1.0)'
+            veryLow: '#006400',
+            low: '#90EE90',
+            medium: '#FFD700',
+            high: '#FF8C00',
+            veryHigh: '#B22222'
+        };
+        const getColor = (value) => {
+            if (value < 300) return colorScale.veryLow;
+            if (value < 600) return colorScale.low;
+            if (value < 1000) return colorScale.medium;
+            if (value < 1500) return colorScale.high;
+            return colorScale.veryHigh;
         };
         chart = new Chart(ctx, {
             type: 'matrix',
@@ -395,17 +402,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     label: `Riesgo País - ${selectedCountry}`,
                     data: data,
                     backgroundColor(context) {
-                        const value = context.dataset.data[context.dataIndex].v;
-                        if (value < 300) return colorScale.veryLow;
-                        if (value < 600) return colorScale.low;
-                        if (value < 1000) return colorScale.medium;
-                        if (value < 1500) return colorScale.high;
-                        return colorScale.veryHigh;
+                        return getColor(context.dataset.data[context.dataIndex].v);
                     },
-                    borderColor: '#ffffff',
-                    borderWidth: 0.5,
-                    width: ({ chart }) => (chart.chartArea || {}).width / years.length - 1,
-                    height: ({ chart }) => (chart.chartArea || {}).height / 365 - 0.5
+                    hoverBackgroundColor(context) {
+                        return getColor(context.dataset.data[context.dataIndex].v);
+                    },
+                    borderWidth: 0,
+                    width: ({ chart }) => (chart.chartArea || {}).width / years.length,
+                    height: ({ chart }) => (chart.chartArea || {}).height / 365
                 }]
             },
             options: {
