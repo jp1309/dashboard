@@ -84,6 +84,7 @@ body {
     background-color: var(--bg-primary);
     padding: 0.25rem;
     border-radius: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .view-btn {
@@ -92,11 +93,12 @@ body {
     border: none;
     color: var(--text-secondary);
     padding: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
     border-radius: 0.375rem;
     transition: all 0.2s;
+    min-width: 80px;
 }
 
 .view-btn:hover {
@@ -150,6 +152,29 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 input[type="date"]:focus {
     border-color: var(--accent-color);
     background-color: #3f4f63;
+}
+
+select.country-select {
+    background-color: #334155;
+    border: 1px solid #475569;
+    color: #f8fafc;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+}
+
+select.country-select:focus {
+    border-color: var(--accent-color);
+    background-color: #3f4f63;
+}
+
+select.country-select option {
+    background-color: #1e293b;
+    color: #f8fafc;
 }
 
 .group-header {
