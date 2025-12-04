@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     subtitle: {
                         display: true,
                         text: 'Fuente: Banco Central de la República Dominicana',
-                        align: 'end',
+                        align: 'start',
                         color: '#64748b',
                         font: { size: 10 },
                         padding: { top: 10 }
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     subtitle: {
                         display: true,
                         text: 'Fuente: Banco Central de la República Dominicana',
-                        align: 'end',
+                        align: 'start',
                         color: '#64748b',
                         font: { size: 10 },
                         padding: { top: 10 }
