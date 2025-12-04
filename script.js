@@ -343,37 +343,96 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function getHeatmapData(country) {
+        // 1. Parse all available data for the country
         const countryData = rawData.map(row => {
             const parts = row.Fecha.split('-');
             return {
+                // Force UTC midnight
                 date: new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))),
                 value: row[country]
             };
-        }).filter(d => d.value !== null && d.value !== undefined && d.date.getUTCFullYear() >= 2008);
+        }).filter(d => d.value !== null && d.value !== undefined)
+            .sort((a, b) => a.date - b.date);
 
         if (countryData.length === 0) return [];
 
-        const years = [...new Set(countryData.map(d => d.date.getUTCFullYear()))].sort();
-        const minYear = Math.min(...years);
-        const maxYear = Math.max(...years);
+        // 2. Create a continuous timeline map with forward fill
+        const dataMap = new Map();
+        let lastValue = null;
+
+        // Start from the very first available date to ensure we have a carry-over value
+        const firstDate = countryData[0].date;
+        const lastAvailableDate = countryData[countryData.length - 1].date;
+
+        // We need to cover up to the last date
+        const currentDate = new Date(firstDate);
+
+        // Helper to format date key for map lookup/storage if needed, 
+        // but we can just iterate and fill.
+        // Actually, let's just iterate day by day from firstDate to lastAvailableDate
+
+        let dataIndex = 0;
+
+        while (currentDate <= lastAvailableDate) {
+            // Check if we have a new value for this date
+            // Since countryData is sorted, we check the next item
+            if (dataIndex < countryData.length && countryData[dataIndex].date.getTime() === currentDate.getTime()) {
+                lastValue = countryData[dataIndex].value;
+                dataIndex++;
+            }
+
+            // Store the value for this date (timestamp key)
+            if (lastValue !== null) {
+                dataMap.set(currentDate.getTime(), lastValue);
+            }
+
+            // Next day
+            currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+        }
+
+        // 3. Generate Heatmap Matrix for 2008 onwards
         const heatmapMatrix = [];
+        const startYear = 2008;
+        const endYear = lastAvailableDate.getUTCFullYear();
 
-        const lastAvailableDate = new Date(Math.max(...countryData.map(d => d.date.getTime())));
-
-        for (let year = minYear; year <= maxYear; year++) {
-            let lastValue = null;
+        for (let year = startYear; year <= endYear; year++) {
             for (let day = 1; day <= 365; day++) {
-                const currentDate = new Date(Date.UTC(year, 0, 1));
-                currentDate.setUTCDate(day);
+                // Construct date for this day of year
+                const date = new Date(Date.UTC(year, 0, 1));
+                date.setUTCDate(day); // This handles day 1..365 correctly
 
-                if (currentDate.getTime() > lastAvailableDate.getTime()) break;
+                // Stop if we go beyond available data
+                if (date > lastAvailableDate) break;
 
-                const dataPoint = countryData.find(d => d.date.getTime() === currentDate.getTime());
+                const val = dataMap.get(date.getTime());
 
-                if (dataPoint) lastValue = dataPoint.value;
-                if (lastValue !== null) heatmapMatrix.push({ x: year.toString(), y: day, v: lastValue });
+                // If it's a leap year, day 366 (Dec 31) might be missed by the loop 1-365.
+                // But for visual consistency on a 1-365 grid, we usually accept this or map 366 to 365.
+                // However, the user issue is GAPS.
+                // If val exists, push it.
+                if (val !== undefined) {
+                    heatmapMatrix.push({ x: year.toString(), y: day, v: val });
+                }
+            }
+
+            // Handle Leap Year Dec 31 (Day 366) if we want to be precise, 
+            // but Chart axis is 1-365. 
+            // Let's check if year is leap and we have data for Dec 31
+            const isLeap = new Date(Date.UTC(year, 1, 29)).getUTCMonth() === 1;
+            if (isLeap) {
+                const date366 = new Date(Date.UTC(year, 11, 31));
+                if (date366 <= lastAvailableDate) {
+                    const val366 = dataMap.get(date366.getTime());
+                    if (val366 !== undefined) {
+                        // Overwrite day 365 or just ignore? 
+                        // To avoid a gap at the very end of a leap year, we can set it to y: 365
+                        // effectively showing the last day's risk for the last pixel.
+                        heatmapMatrix.push({ x: year.toString(), y: 365, v: val366 });
+                    }
+                }
             }
         }
+
         return heatmapMatrix;
     }
 
@@ -475,7 +534,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             title() { return ''; },
                             label(context) {
                                 const v = context.dataset.data[context.dataIndex];
-                                const date = new Date(Date.UTC(parseInt(v.x), 0, v.y));
+                                const date = new Date(Date.UTC(parseInt(v.x), 0, 1));
+                                date.setUTCDate(v.y); // Set day of year correctly
                                 const value = Math.round(v.v);
                                 let level = '';
                                 if (value < 300) level = 'Muy Bajo';
