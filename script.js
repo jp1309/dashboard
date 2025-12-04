@@ -410,129 +410,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                     borderWidth: 0,
                     width: ({ chart }) => (chart.chartArea || {}).width / years.length + 1,
                     height: ({ chart }) => (chart.chartArea || {}).height / 365 + 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: { padding: { bottom: 60 } },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            generateLabels: function () {
-                                return [
-                                    { text: 'Muy Bajo (0-300)', fillStyle: colorScale.veryLow, strokeStyle: '#ffffff', lineWidth: 1 },
-                                    { text: 'Bajo (300-600)', fillStyle: colorScale.low, strokeStyle: '#ffffff', lineWidth: 1 },
-                                    { text: 'Medio (600-1000)', fillStyle: colorScale.medium, strokeStyle: '#ffffff', lineWidth: 1 },
-                                    { text: 'Alto (1000-1500)', fillStyle: colorScale.high, strokeStyle: '#ffffff', lineWidth: 1 },
-                                    { text: 'Muy Alto (>1500)', fillStyle: colorScale.veryHigh, strokeStyle: '#ffffff', lineWidth: 1 }
-                                ];
-                            },
-                            color: '#1e293b',
-                            font: { size: 11 },
-                            padding: 15,
-                            boxWidth: 20,
-                            boxHeight: 15
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: (() => {
-                            if (!rawData || rawData.length === 0) return '';
-                            const lastDate = new Date(rawData[rawData.length - 1].Fecha);
-                            return `Riesgo País (último dato: ${String(lastDate.getUTCDate()).padStart(2, '0')}/${String(lastDate.getUTCMonth() + 1).padStart(2, '0')}/${lastDate.getUTCFullYear()})`;
-                        })(),
-                        align: 'start',
-                        color: '#1e293b',
-                        font: { size: 16, weight: 'bold' },
-                        padding: { bottom: 5 }
-                    },
-                    subtitle: {
-                        display: true,
-                        text: `País: ${selectedCountry}`,
-                        align: 'start',
-                        color: '#475569',
-                        font: { size: 13 },
-                        padding: { bottom: 15 }
-                    },
-                    tooltip: {
-                        backgroundColor: '#ffffff',
-                        titleColor: '#0f172a',
-                        bodyColor: '#334155',
-                        borderColor: '#e2e8f0',
-                        borderWidth: 1,
-                        callbacks: {
-                            title() { return ''; },
-                            label(context) {
-                                const v = context.dataset.data[context.dataIndex];
-                                const date = new Date(parseInt(v.x), 0, v.y);
-                                const value = Math.round(v.v);
-                                let level = '';
-                                if (value < 300) level = 'Muy Bajo';
-                                else if (value < 600) level = 'Bajo';
-                                else if (value < 1000) level = 'Medio';
-                                else if (value < 1500) level = 'Alto';
-                                else level = 'Muy Alto';
-                                return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}: ${value} bps (${level})`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        type: 'category',
-                        labels: years,
-                        offset: true,
-                        position: 'top',
-                        ticks: { color: '#64748b', font: { size: 11, weight: 'bold' } },
-                        grid: { display: false }
-                    },
-                    y: {
-                        type: 'linear',
-                        min: 1,
-                        max: 365,
-                        offset: true,
-                        reverse: true,
-                        ticks: {
-                            stepSize: 30,
-                            color: '#64748b',
-                            font: { weight: 'bold' },
-                            callback: function (value) {
-                                const months = [
-                                    { day: 1, label: 'Ene' }, { day: 32, label: 'Feb' }, { day: 60, label: 'Mar' },
-                                    { day: 91, label: 'Abr' }, { day: 121, label: 'May' }, { day: 152, label: 'Jun' },
-                                    { day: 182, label: 'Jul' }, { day: 213, label: 'Ago' }, { day: 244, label: 'Sep' },
-                                    { day: 274, label: 'Oct' }, { day: 305, label: 'Nov' }, { day: 335, label: 'Dic' }
-                                ];
-                                const month = months.find(m => Math.abs(m.day - value) < 15);
-                                return month ? month.label : '';
-                            }
-                        },
-                        grid: { color: '#f1f5f9', lineWidth: 0.5 }
-                    }
                 }
-            },
+                }
+        },
             plugins: [sourceTextPlugin]
         });
     }
 
-    viewTimeSeriesBtn.addEventListener('click', () => switchView('timeseries'));
-    viewRankingBtn.addEventListener('click', () => switchView('ranking'));
-    viewHeatmapBtn.addEventListener('click', () => switchView('heatmap'));
-    startDateInput.addEventListener('change', updateChart);
-    endDateInput.addEventListener('change', updateChart);
-    rankingDateInput.addEventListener('change', () => { if (currentView === 'ranking') updateView(); });
-    heatmapCountrySelect.addEventListener('change', () => { if (currentView === 'heatmap') updateView(); });
-    selectAllBtn.addEventListener('click', () => {
-        allCountries.forEach(c => selectedCountries.add(c));
-        updateCheckboxes();
-        if (currentView === 'timeseries') updateChart();
-    });
-    deselectAllBtn.addEventListener('click', () => {
-        selectedCountries.clear();
-        updateCheckboxes();
-        if (currentView === 'timeseries') updateChart();
-    });
+viewTimeSeriesBtn.addEventListener('click', () => switchView('timeseries'));
+viewRankingBtn.addEventListener('click', () => switchView('ranking'));
+viewHeatmapBtn.addEventListener('click', () => switchView('heatmap'));
+startDateInput.addEventListener('change', updateChart);
+endDateInput.addEventListener('change', updateChart);
+rankingDateInput.addEventListener('change', () => { if (currentView === 'ranking') updateView(); });
+heatmapCountrySelect.addEventListener('change', () => { if (currentView === 'heatmap') updateView(); });
+selectAllBtn.addEventListener('click', () => {
+    allCountries.forEach(c => selectedCountries.add(c));
+    updateCheckboxes();
+    if (currentView === 'timeseries') updateChart();
+});
+deselectAllBtn.addEventListener('click', () => {
+    selectedCountries.clear();
+    updateCheckboxes();
+    if (currentView === 'timeseries') updateChart();
+});
 });
