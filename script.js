@@ -382,11 +382,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const years = [...new Set(data.map(d => d.x))].sort();
         const colorScale = {
-            veryLow: '#006400',
-            low: '#90EE90',
-            medium: '#FFD700',
-            high: '#FF8C00',
-            veryHigh: '#B22222'
+            veryLow: 'rgba(0, 100, 0, 1.0)',
+            low: 'rgba(144, 238, 144, 1.0)',
+            medium: 'rgba(255, 215, 0, 1.0)',
+            high: 'rgba(255, 140, 0, 1.0)',
+            veryHigh: 'rgba(178, 34, 34, 1.0)'
         };
         chart = new Chart(ctx, {
             type: 'matrix',
