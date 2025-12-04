@@ -290,6 +290,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             return;
         }
+
+        // Format date for subtitle
+        const parts = selectedDateStr.split('-');
+        const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
         let rankingData = [];
         allCountries.forEach(country => {
             const val = row[country];
@@ -316,18 +321,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: { padding: { bottom: 30 } },
                 plugins: {
                     legend: { display: false },
                     title: {
                         display: true,
-                        text: (() => {
-                            if (!rawData || rawData.length === 0) return '';
-                            const lastDate = new Date(rawData[rawData.length - 1].Fecha);
-                            return `Riesgo País (último dato: ${String(lastDate.getUTCDate()).padStart(2, '0')}/${String(lastDate.getUTCMonth() + 1).padStart(2, '0')}/${lastDate.getUTCFullYear()})`;
-                        })(),
+                        text: 'Riesgo País',
                         align: 'start',
                         color: '#1e293b',
                         font: { size: 16, weight: 'bold' },
+                        padding: { bottom: 5 }
+                    },
+                    subtitle: {
+                        display: true,
+                        text: `Fecha: ${formattedDate}`,
+                        align: 'start',
+                        color: '#475569',
+                        font: { size: 14 },
                         padding: { bottom: 20 }
                     },
                     tooltip: { backgroundColor: '#ffffff', titleColor: '#0f172a', bodyColor: '#334155', borderColor: '#e2e8f0', borderWidth: 1 },
