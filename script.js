@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             type: 'line',
             data: { datasets },
             options: {
-                layout: { padding: { right: 40 } },
+                layout: { padding: { right: 40, bottom: 30 } },
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
