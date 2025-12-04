@@ -254,7 +254,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 plugins: {
                     legend: {
                         position: 'top',
+                        align: 'end', // Move legend to the right to not overlap with title
                         labels: { color: '#1e293b', usePointStyle: true, pointStyle: 'circle' }
+                    },
+                    title: {
+                        display: true,
+                        text: (() => {
+                            if (!rawData || rawData.length === 0) return '';
+                            const lastDate = new Date(rawData[rawData.length - 1].Fecha);
+                            const day = String(lastDate.getUTCDate()).padStart(2, '0');
+                            const month = String(lastDate.getUTCMonth() + 1).padStart(2, '0');
+                            const year = lastDate.getUTCFullYear();
+                            return `Riesgo País (último dato: ${day}/${month}/${year})`;
+                        })(),
+                        align: 'start',
+                        color: '#1e293b',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { bottom: 20 }
                     },
                     tooltip: {
                         backgroundColor: '#ffffff',
