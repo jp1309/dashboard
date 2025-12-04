@@ -382,11 +382,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const years = [...new Set(data.map(d => d.x))].sort();
         const colorScale = {
-            veryLow: '#059669',
-            low: '#86efac',
-            medium: '#facc15',
-            high: '#f97316',
-            veryHigh: '#dc2626'
+            veryLow: 'rgb(0, 100, 0)',      // Verde oscuro muy saturado
+            low: 'rgb(144, 238, 144)',      // Verde claro
+            medium: 'rgb(255, 215, 0)',     // Amarillo oro
+            high: 'rgb(255, 140, 0)',       // Naranja oscuro
+            veryHigh: 'rgb(178, 34, 34)'    // Rojo oscuro (firebrick)
         };
         chart = new Chart(ctx, {
             type: 'matrix',
