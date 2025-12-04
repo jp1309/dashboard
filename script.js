@@ -408,8 +408,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         return getColor(context.dataset.data[context.dataIndex].v);
                     },
                     borderWidth: 0,
-                    width: ({ chart }) => (chart.chartArea || {}).width / years.length,
-                    height: ({ chart }) => (chart.chartArea || {}).height / 365
+                    width: ({ chart }) => (chart.chartArea || {}).width / years.length + 1,
+                    height: ({ chart }) => (chart.chartArea || {}).height / 365 + 1
                 }]
             },
             options: {
