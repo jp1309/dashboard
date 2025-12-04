@@ -342,26 +342,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    function getDayOfYear(date) {
-        const start = new Date(date.getFullYear(), 0, 0);
-        return Math.floor((date - start) / (1000 * 60 * 60 * 24));
-    }
-
     function getHeatmapData(country) {
-        const countryData = rawData.map(row => ({ date: new Date(row.Fecha), value: row[country] }))
-            .filter(d => d.value !== null && d.value !== undefined && d.date.getFullYear() >= 2008);
+        const countryData = rawData.map(row => {
+            const parts = row.Fecha.split('-');
+            return {
+                date: new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))),
+                value: row[country]
+            };
+        }).filter(d => d.value !== null && d.value !== undefined && d.date.getUTCFullYear() >= 2008);
+
         if (countryData.length === 0) return [];
-        const lastAvailableDate = new Date(Math.max(...countryData.map(d => d.date)));
-        const years = [...new Set(countryData.map(d => d.date.getFullYear()))].sort();
+
+        const years = [...new Set(countryData.map(d => d.date.getUTCFullYear()))].sort();
         const minYear = Math.min(...years);
         const maxYear = Math.max(...years);
         const heatmapMatrix = [];
+
+        const lastAvailableDate = new Date(Math.max(...countryData.map(d => d.date.getTime())));
+
         for (let year = minYear; year <= maxYear; year++) {
             let lastValue = null;
             for (let day = 1; day <= 365; day++) {
-                const currentDate = new Date(year, 0, day);
-                if (currentDate > lastAvailableDate) break;
-                const dataPoint = countryData.find(d => d.date.getFullYear() === year && getDayOfYear(d.date) === day);
+                const currentDate = new Date(Date.UTC(year, 0, 1));
+                currentDate.setUTCDate(day);
+
+                if (currentDate.getTime() > lastAvailableDate.getTime()) break;
+
+                const dataPoint = countryData.find(d => d.date.getTime() === currentDate.getTime());
+
                 if (dataPoint) lastValue = dataPoint.value;
                 if (lastValue !== null) heatmapMatrix.push({ x: year.toString(), y: day, v: lastValue });
             }
@@ -467,7 +475,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             title() { return ''; },
                             label(context) {
                                 const v = context.dataset.data[context.dataIndex];
-                                const date = new Date(parseInt(v.x), 0, v.y);
+                                const date = new Date(Date.UTC(parseInt(v.x), 0, v.y));
                                 const value = Math.round(v.v);
                                 let level = '';
                                 if (value < 300) level = 'Muy Bajo';
@@ -475,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 else if (value < 1000) level = 'Medio';
                                 else if (value < 1500) level = 'Alto';
                                 else level = 'Muy Alto';
-                                return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}: ${value} bps (${level})`;
+                                return `${String(date.getUTCDate()).padStart(2, '0')}/${String(date.getUTCMonth() + 1).padStart(2, '0')}/${date.getUTCFullYear()}: ${value} bps (${level})`;
                             }
                         }
                     }
