@@ -495,6 +495,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (countryData.length === 0) return [];
 
+        const lastAvailableDate = new Date(Math.max(...countryData.map(d => d.date)));
+
         const years = [...new Set(countryData.map(d => d.date.getFullYear()))].sort();
         const minYear = Math.min(...years);
         const maxYear = Math.max(...years);
@@ -505,6 +507,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             let lastValue = null;
 
             for (let day = 1; day <= 365; day++) {
+                const currentDate = new Date(year, 0, day);
+
+                if (currentDate > lastAvailableDate) {
+                    break;
+                }
+
                 const dataPoint = countryData.find(d =>
                     d.date.getFullYear() === year && getDayOfYear(d.date) === day
                 );
@@ -553,9 +561,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     data: data,
                     backgroundColor(context) {
                         const value = context.dataset.data[context.dataIndex].v;
-                        if (value < 600) return 'rgb(22, 163, 74)'; // Verde fuerte
-                        if (value < 1000) return 'rgb(234, 179, 8)'; // Amarillo fuerte
-                        return 'rgb(220, 38, 38)'; // Rojo fuerte
+                        if (value < 300) return 'rgb(5, 150, 105)';
+                        if (value < 600) return 'rgb(134, 239, 172)';
+                        if (value < 1000) return 'rgb(250, 204, 21)';
+                        if (value < 1500) return 'rgb(249, 115, 22)';
+                        return 'rgb(220, 38, 38)';
                     },
                     borderColor: '#ffffff',
                     borderWidth: 0.5,
@@ -567,10 +577,54 @@ document.addEventListener('DOMContentLoaded', async () => {
                 responsive: true,
                 maintainAspectRatio: false,
                 layout: {
-                    padding: { bottom: 25 }
+                    padding: { bottom: 60 }
                 },
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            generateLabels: function () {
+                                return [
+                                    {
+                                        text: 'Muy Bajo (0-300)',
+                                        fillStyle: 'rgb(5, 150, 105)',
+                                        strokeStyle: '#ffffff',
+                                        lineWidth: 1
+                                    },
+                                    {
+                                        text: 'Bajo (300-600)',
+                                        fillStyle: 'rgb(134, 239, 172)',
+                                        strokeStyle: '#ffffff',
+                                        lineWidth: 1
+                                    },
+                                    {
+                                        text: 'Medio (600-1000)',
+                                        fillStyle: 'rgb(250, 204, 21)',
+                                        strokeStyle: '#ffffff',
+                                        lineWidth: 1
+                                    },
+                                    {
+                                        text: 'Alto (1000-1500)',
+                                        fillStyle: 'rgb(249, 115, 22)',
+                                        strokeStyle: '#ffffff',
+                                        lineWidth: 1
+                                    },
+                                    {
+                                        text: 'Muy Alto (>1500)',
+                                        fillStyle: 'rgb(220, 38, 38)',
+                                        strokeStyle: '#ffffff',
+                                        lineWidth: 1
+                                    }
+                                ];
+                            },
+                            color: '#1e293b',
+                            font: { size: 11 },
+                            padding: 15,
+                            boxWidth: 20,
+                            boxHeight: 15
+                        }
+                    },
                     title: {
                         display: true,
                         text: (() => {
@@ -610,7 +664,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 const day = String(date.getDate()).padStart(2, '0');
                                 const month = String(date.getMonth() + 1).padStart(2, '0');
                                 const year = date.getFullYear();
-                                return `${day}/${month}/${year}: ${Math.round(v.v)} bps`;
+                                const value = Math.round(v.v);
+                                let level = '';
+                                if (value < 300) level = 'Muy Bajo';
+                                else if (value < 600) level = 'Bajo';
+                                else if (value < 1000) level = 'Medio';
+                                else if (value < 1500) level = 'Alto';
+                                else level = 'Muy Alto';
+                                return `${day}/${month}/${year}: ${value} bps (${level})`;
                             }
                         }
                     }
