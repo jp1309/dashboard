@@ -23,6 +23,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentView = 'timeseries'; // 'timeseries' or 'ranking'
     let countryColors = {};
 
+    // Custom plugin to draw source text at bottom-left
+    const sourceTextPlugin = {
+        id: 'sourceText',
+        afterDraw: (chart) => {
+            const ctx = chart.ctx;
+            const chartArea = chart.chartArea;
+
+            ctx.save();
+            ctx.font = '10px Inter, sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+
+            const text = 'Fuente: Banco Central de la República Dominicana';
+            const x = chartArea.left;
+            const y = chart.height - 5; // 5px from bottom
+
+            ctx.fillText(text, x, y);
+            ctx.restore();
+        }
+    };
+
     // Premium colors
     // Flag Colors Mapping - Optimized for distinction
     const flagColors = {
@@ -272,14 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         font: { size: 16, weight: 'bold' },
                         padding: { bottom: 20 }
                     },
-                    subtitle: {
-                        display: true,
-                        text: 'Fuente: Banco Central de la República Dominicana',
-                        align: 'start',
-                        color: '#64748b',
-                        font: { size: 10 },
-                        padding: { top: 10 }
-                    },
+
                     tooltip: {
                         backgroundColor: '#ffffff',
                         titleColor: '#0f172a',
@@ -314,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             },
-            plugins: [ChartDataLabels] // Register plugin locally if needed, but CDN usually registers globally. Safe to include if defined.
+            plugins: [ChartDataLabels, sourceTextPlugin]
         });
     }
 
@@ -424,14 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         font: { size: 16, weight: 'bold' },
                         padding: { bottom: 20 }
                     },
-                    subtitle: {
-                        display: true,
-                        text: 'Fuente: Banco Central de la República Dominicana',
-                        align: 'start',
-                        color: '#64748b',
-                        font: { size: 10 },
-                        padding: { top: 10 }
-                    },
+
                     tooltip: {
                         backgroundColor: '#ffffff',
                         titleColor: '#0f172a',
@@ -462,7 +470,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             },
-            plugins: [ChartDataLabels]
+            plugins: [ChartDataLabels, sourceTextPlugin]
         });
     }
 
