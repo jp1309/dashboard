@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 scales: {
                     x: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' }, grace: '10%' },
-                    y: { grid: { display: false }, ticks: { color: '#1e293b', font: { weight: 'bold', size: 8 } } }
+                    y: { grid: { display: false }, ticks: { color: '#1e293b', font: { weight: 'bold', size: 10 } } }
                 }
             },
             plugins: [ChartDataLabels, sourceTextPlugin]
