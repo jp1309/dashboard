@@ -1,4 +1,4 @@
-# 🌐 Publicar Dashboard en la Web (GitHub Pages)
+﻿# 🌐 Publicar Dashboard en la Web (GitHub Pages)
 
 ## ✅ Pasos para Publicar
 

@@ -1,4 +1,4 @@
-name: Update EMBI Data
+﻿name: Update EMBI Data
 
 on:
   schedule:

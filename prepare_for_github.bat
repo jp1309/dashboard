@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 echo ============================================
 echo  Preparando archivos para GitHub Pages
 echo ============================================

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+﻿﻿document.addEventListener('DOMContentLoaded', async () => {
     const countryListEl = document.getElementById('countryList');
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
@@ -76,7 +76,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         rawData.sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
         const minDate = rawData[0].Fecha;
         const maxDate = rawData[rawData.length - 1].Fecha;
-        const defaultStartDate = '2025-09-01';
+        const minDateObj = new Date(minDate + 'T00:00:00Z');
+        const maxDateObj = new Date(maxDate + 'T00:00:00Z');
+        const defaultStartObj = new Date(maxDateObj);
+        defaultStartObj.setUTCDate(defaultStartObj.getUTCDate() - 60);
+        if (defaultStartObj < minDateObj) defaultStartObj.setTime(minDateObj.getTime());
+        const defaultStartDate = defaultStartObj.toISOString().slice(0, 10);
         startDateInput.value = defaultStartDate;
         endDateInput.value = maxDate;
         startDateInput.min = minDate;

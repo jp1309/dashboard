@@ -1,4 +1,4 @@
-# Archivos a ignorar en Git
+﻿# Archivos a ignorar en Git
 Serie_Historica_Spread_del_EMBI.xlsx
 __pycache__/
 *.pyc

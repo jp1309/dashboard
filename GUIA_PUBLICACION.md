@@ -1,4 +1,4 @@
-# 🌐 Guía Completa: Publicar Dashboard GRATIS en la Web
+﻿# 🌐 Guía Completa: Publicar Dashboard GRATIS en la Web
 
 ## 📋 Lo que necesitas (todo gratis):
 1. ✅ Cuenta de GitHub (si no tienes, créala en https://github.com)

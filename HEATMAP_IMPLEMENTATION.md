@@ -1,4 +1,4 @@
-# Implementación del Heatmap - Plan de Cambios
+﻿# Implementación del Heatmap - Plan de Cambios
 
 ## Cambios necesarios en script.js:
 

@@ -1,4 +1,4 @@
-# Dashboard de Análisis de Riesgo País (EMBI)
+﻿# Dashboard de Análisis de Riesgo País (EMBI)
 
 Plataforma interactiva de visualización de datos financieros diseñada para el monitoreo y análisis histórico del índice EMBI (Emerging Markets Bond Index) en mercados emergentes.
 
