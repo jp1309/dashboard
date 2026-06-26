@@ -3,6 +3,7 @@ import json
 import os
 import urllib.request
 import ssl
+import time
 
 # URL of the Excel file
 url = "https://cdn.bancentral.gov.do/documents/entorno-internacional/documents/Serie_Historica_Spread_del_EMBI.xlsx"
@@ -11,11 +12,12 @@ file_name = "Serie_Historica_Spread_del_EMBI.xlsx"
 print(f"Downloading latest data from {url}...")
 
 try:
+    download_url = f"{url}?v={int(time.time())}"
     # Create an unverified context to avoid SSL errors if certificates are missing
     context = ssl._create_unverified_context()
     
     # Download the file
-    with urllib.request.urlopen(url, context=context) as response, open(file_name, 'wb') as out_file:
+    with urllib.request.urlopen(download_url, context=context) as response, open(file_name, 'wb') as out_file:
         data = response.read()
         out_file.write(data)
     print("Download successful.")
@@ -33,6 +35,7 @@ try:
     
     # Drop rows where Fecha is NaT
     df = df.dropna(subset=['Fecha'])
+    print(f"Latest source date: {df['Fecha'].max()}")
     
     # Transform numeric columns: Multiply by 100 and round to 0 decimals
     cols_to_transform = [c for c in df.columns if c != 'Fecha']

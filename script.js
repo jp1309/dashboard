@@ -55,7 +55,7 @@
         '#f472b6', '#22d3ee', '#fb923c', '#9ca3af', '#e879f9'];
 
     try {
-        const response = await fetch('data.json');
+        const response = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-store' });
         rawData = await response.json();
         initDashboard();
     } catch (error) {
