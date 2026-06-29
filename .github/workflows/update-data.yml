@@ -2,9 +2,10 @@
 
 on:
   schedule:
-    # GitHub usa UTC; 14-17 UTC cubre 10/11/12 ET durante horario
-    # de verano y horario estandar. El job filtra la hora ET abajo.
-    - cron: '0 14-17 * * *'
+    # Evitar el minuto 00: GitHub puede retrasar o descartar schedules
+    # cuando hay mucha carga al inicio de cada hora.
+    - cron: '17 10,11,12 * * *'
+      timezone: "America/New_York"
   workflow_dispatch: # Permite ejecutar manualmente
 
 permissions:
@@ -15,54 +16,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Confirm Eastern retry window
-      id: window
-      shell: bash
-      run: |
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          echo "should_run=true" >> "$GITHUB_OUTPUT"
-          echo "Manual run: proceeding outside the scheduled window."
-          exit 0
-        fi
-
-        eastern_hour="$(TZ=America/New_York date +'%H')"
-        if [[ "$eastern_hour" == "10" || "$eastern_hour" == "11" || "$eastern_hour" == "12" ]]; then
-          echo "should_run=true" >> "$GITHUB_OUTPUT"
-          echo "Eastern hour is ${eastern_hour}:00; proceeding."
-        else
-          echo "should_run=false" >> "$GITHUB_OUTPUT"
-          echo "Eastern hour is ${eastern_hour}:00; skipping."
-        fi
-
     - name: Checkout repository
-      if: steps.window.outputs.should_run == 'true'
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Sync with origin
-      if: steps.window.outputs.should_run == 'true'
       run: |
         git pull --rebase origin main
       
     - name: Set up Python
-      if: steps.window.outputs.should_run == 'true'
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
         
     - name: Install dependencies
-      if: steps.window.outputs.should_run == 'true'
       run: |
         pip install pandas openpyxl
         
     - name: Download and process data
-      if: steps.window.outputs.should_run == 'true'
       run: |
         python convert_data.py
         
     - name: Commit and push if changed
-      if: steps.window.outputs.should_run == 'true'
       run: |
         git config --global user.name 'GitHub Actions Bot'
         git config --global user.email 'actions@github.com'
