@@ -1,73 +1,30 @@
-﻿# Dashboard de Análisis de Riesgo País (EMBI)
+# Riesgo país (EMBI)
 
-Plataforma interactiva de visualización de datos financieros diseñada para el monitoreo y análisis histórico del índice EMBI (Emerging Markets Bond Index) en mercados emergentes.
+Dashboard interactivo para explorar la evolución del riesgo país y comparar los spreads de deuda soberana de distintos países, expresados en puntos básicos (bps).
 
-## 📋 Descripción General
+### [Abrir el dashboard](https://jp1309.github.io/dashboard/)
 
-Este proyecto proporciona una interfaz web analítica para explorar la evolución del riesgo país a través de múltiples dimensiones temporales y comparativas. Utiliza datos de series temporales para generar visualizaciones dinámicas que facilitan la toma de decisiones y el análisis económico.
+El sitio está publicado en GitHub Pages y se puede consultar directamente desde el navegador.
 
-## 🚀 Funcionalidades Principales
+## Qué puedes explorar
 
-### 1. Visualización de Series Temporales
-- Gráficos de línea interactivos para el seguimiento histórico del spread (bps).
-- Capacidad de comparación simultánea entre múltiples países.
-- Filtros de rango de fechas personalizados.
+| Vista | Qué muestra |
+| --- | --- |
+| **Serie de tiempo** | Evolución de uno o varios países en el rango de fechas que elijas. |
+| **Ranking por fecha** | Comparación de países para un día seleccionado. |
+| **Mapa de calor** | Evolución diaria de un país, organizada por año y día del año. |
 
-### 2. Ranking Comparativo
-- Gráfico de barras horizontal para la comparación transversal de riesgo en fechas específicas.
-- Ordenamiento automático de mayor a menor riesgo.
+## Datos y actualización
 
-### 3. Mapa de Calor (Heatmap)
-- Visualización matricial de intensidad de riesgo (Año vs. Día del año).
-- Escala de color de 5 niveles para identificación rápida de patrones estacionales y tendencias estructurales.
-- Algoritmo de relleno de datos (forward-fill) para continuidad visual en series incompletas.
+La fuente es la [serie histórica del spread del EMBI del Banco Central de la República Dominicana](https://cdn.bancentral.gov.do/documents/entorno-internacional/documents/Serie_Historica_Spread_del_EMBI.xlsx). El script [`convert_data.py`](convert_data.py) descarga el Excel, transforma los valores a puntos básicos y genera [`data.json`](data.json), que utiliza el dashboard.
 
-## 🛠️ Stack Tecnológico
+El [flujo de GitHub Actions](.github/workflows/update-data.yml) intenta actualizar los datos cada día y publica cambios cuando el archivo generado es diferente. La fecha más reciente disponible depende de la publicación de la fuente.
 
-- **Frontend:** HTML5, CSS3 (Diseño Responsive), JavaScript (ES6+).
-- **Visualización:** Chart.js, chartjs-chart-matrix.
-- **Procesamiento de Datos:** Python (Pandas) para la transformación de Excel a JSON.
-- **Automatización:** GitHub Actions para la actualización diaria de datos.
-- **Despliegue:** GitHub Pages.
+## Archivos principales
 
-## 📂 Estructura del Repositorio
-
-```
-dashboard/
-├── index.html              # Punto de entrada de la aplicación
-├── script.js               # Lógica de negocio y renderizado de gráficos
-├── style.css               # Definiciones de estilos y diseño visual
-├── data.json               # Fuente de datos estructurada (generada automáticamente)
-├── convert_data.py         # Script ETL (Extract, Transform, Load)
-├── .github/workflows/      # Configuraciones CI/CD
-└── README.md               # Documentación técnica
-```
-
-## 🔄 Flujo de Datos
-
-1. **Ingesta:** Los datos brutos se procesan desde archivos Excel (`.xlsx`).
-2. **Transformación:** El script `convert_data.py` limpia, normaliza y exporta los datos a formato JSON optimizado para web.
-3. **Visualización:** El cliente web consume `data.json` y renderiza los gráficos en el navegador del usuario.
-
-## 💻 Instalación y Despliegue Local
-
-Para ejecutar este proyecto en un entorno local:
-
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/TU-USUARIO/dashboard-embi.git
-   cd dashboard-embi
-   ```
-
-2. **Servir la aplicación:**
-   Puede utilizar cualquier servidor HTTP estático. Ejemplo con Python:
-   ```bash
-   python -m http.server 8000
-   ```
-
-3. **Acceder:**
-   Abra su navegador en `http://localhost:8000`.
-
-## 📄 Licencia
-
-Este proyecto se distribuye bajo la licencia MIT. Consulte el archivo `LICENSE` para más detalles.
+| Archivo | Función |
+| --- | --- |
+| [`index.html`](index.html), [`style.css`](style.css) y [`script.js`](script.js) | Interfaz y gráficos del dashboard. |
+| [`data.json`](data.json) | Datos que carga la página. |
+| [`convert_data.py`](convert_data.py) | Descarga y conversión de la serie original. |
+| [`.github/workflows/update-data.yml`](.github/workflows/update-data.yml) | Actualización automática de datos. |
