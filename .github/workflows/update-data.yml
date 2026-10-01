@@ -1,43 +1,44 @@
-﻿name: Update EMBI Data
+name: Update EMBI Data
 
 on:
   schedule:
-    # Evitar el minuto 00: GitHub puede retrasar o descartar schedules
-    # cuando hay mucha carga al inicio de cada hora.
-    - cron: '17 10,11,12 * * *'
-      timezone: "America/New_York"
+    # Cada 2 horas (UTC), en el minuto 17 para evitar la congestión de :00.
+    # El BCRD publica con rezago variable y GitHub retrasa o descarta corridas
+    # programadas; varias corridas al día evitan quedarse un día atrás.
+    - cron: '17 */2 * * *'
   workflow_dispatch: # Permite ejecutar manualmente
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-embi-data
+  cancel-in-progress: false
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 10
+
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
-        fetch-depth: 0
+        ref: main
 
-    - name: Sync with origin
-      run: |
-        git pull --rebase origin main
-      
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.x'
-        
+
     - name: Install dependencies
       run: |
         pip install pandas openpyxl
-        
+
     - name: Download and process data
       run: |
         python convert_data.py
-        
+
     - name: Commit and push if changed
       run: |
         git config --global user.name 'GitHub Actions Bot'
@@ -45,7 +46,12 @@ jobs:
         git add data.json
         if git diff --staged --quiet; then
           echo "No new data found; later scheduled runs will try again."
-        else
-          git commit -m "Auto-update EMBI data"
-          git push
+          exit 0
         fi
+        git commit -m "Auto-update EMBI data"
+        for attempt in 1 2 3 4; do
+          git pull --rebase origin main && git push origin HEAD:main && exit 0
+          echo "Push attempt $attempt failed; retrying..."
+          sleep $((attempt * 5))
+        done
+        exit 1
