@@ -2,10 +2,14 @@ name: Update EMBI Data
 
 on:
   schedule:
-    # Cada 2 horas (UTC), en el minuto 17 para evitar la congestión de :00.
-    # El BCRD publica con rezago variable y GitHub retrasa o descarta corridas
-    # programadas; varias corridas al día evitan quedarse un día atrás.
-    - cron: '17 */2 * * *'
+    # Horas en UTC, minutos fuera de :00 para evitar la congestión de GitHub.
+    # El BCRD publica el dato del día hábil anterior entre las 16:00 y las
+    # 20:00 UTC. GitHub descarta muchas corridas programadas, así que en esa
+    # ventana (lunes a viernes) se intenta cada media hora.
+    - cron: '17,47 15-23 * * 1-5'
+    # Respaldo fuera de la ventana (incluye fines de semana) por si el BCRD
+    # publica tarde o corrige datos.
+    - cron: '17 1,5,9,13 * * *'
   workflow_dispatch: # Permite ejecutar manualmente
 
 permissions:
